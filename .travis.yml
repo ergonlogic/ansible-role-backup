@@ -17,6 +17,4 @@ before_script:
 script:
   - ". d"
   - cd tests
-  - mkdir roles
-  - ln -s .. roles/ergonlogic.backup
   - ansible-playbook playbook.yml -i inventory
