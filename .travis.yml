@@ -12,7 +12,7 @@ env:
 
 install:
   - pip install --upgrade pip
-  - pip install --user yaml boto jinja2
+  - pip install --user boto jinja2
 
 script:
   - ". d"
