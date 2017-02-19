@@ -1,0 +1,17 @@
+---
+galaxy_info:
+  author: Christopher Gervais (ergonlogic)
+  description: Backup to S3 using Restic and BackupNinja
+  company: "Ergon Logic Enterprises"
+  license: "license (BSD, MIT)"
+  min_ansible_version: 1.4
+  platforms:
+  - name: Ubuntu
+    versions:
+    - all
+  - name: Debian
+    versions:
+    - all
+  galaxy_tags:
+    - backup
+dependencies: []

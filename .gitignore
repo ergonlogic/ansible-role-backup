@@ -1,0 +1,9 @@
+meta/.galaxy_install_info
+ansible.cfg
+.vagrant/*
+tests/roles/*
+!tests/roles/*.yml
+*.retry
+*.swp
+aws.access.key
+aws.access.secret

@@ -1,0 +1,7 @@
+---
+
+- name: Include restic tasks.
+  include: restic.yml
+
+- name: Include backupninja tasks.
+  include: backupninja.yml

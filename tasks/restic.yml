@@ -1,0 +1,38 @@
+---
+
+- name: Ensure restic directory exists
+  file:
+    path: "{{ restic_dir }}"
+    state: directory
+
+- name: Download restic binary
+  get_url:
+    url: "{{ restic_download_url }}"
+    checksum: "{{ restic_download_checksum }}"
+    dest: "{{ restic_dir }}"
+    owner: root
+    group: root
+
+- name: Ensure bzip2 is installed
+  apt:
+    name: bzip2
+
+- name: Decompress restic binary
+  command: "bunzip2 -k {{ restic_dir }}/restic_{{ restic_version }}_{{ restic_arch }}.bz2"
+  args:
+    chdir: "{{ restic_dir }}"
+    creates: "{{ restic_dir }}/restic_{{ restic_version }}_{{ restic_arch }}"
+
+- name: Ensure restic binary is executable
+  file:
+    path: "{{ restic_dir }}/restic_{{ restic_version }}_{{ restic_arch }}"
+    mode: 755
+    owner: root
+    group: root
+
+- name: Symlink restic binary to be in PATH
+  file:
+    state: link
+    src: "{{ restic_dir }}/restic_{{ restic_version }}_{{ restic_arch }}"
+    dest: "{{ restic_bin }}"
+

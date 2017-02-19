@@ -1,0 +1,24 @@
+#!/bin/bash
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  echo "This script must be sourced. Try \". ${BASH_SOURCE[0]}\"" 1>&2
+  exit 1
+else
+  # Ensure Ansible is installed.
+  make ansible
+  # Bootstrap local Ansible install.
+  . .mk/.local/src/ansible/ansible-latest/hacking/env-setup 2>&1 > /dev/null
+  # Bootstrap Drumkit.
+  . .mk/drumkit
+  if [[ -f aws.access.key ]]; then
+    export AWS_ACCESS_KEY_ID=$(cat aws.access.key)
+  else
+    echo "No 'aws.access.key' file found. AWS_ACCESS_KEY_ID must be set by another method." 1>&2
+  fi
+  if [[ -f aws.access.secret ]]; then
+    export AWS_SECRET_ACCESS_KEY=$(cat aws.access.secret)
+  else
+    echo "No 'aws.access.secret' file found. AWS_SECRET_ACCESS_KEY must be set by another method." 1>&2
+  fi
+fi
+
