@@ -3,3 +3,14 @@
 - name: Install Backupninja
   apt:
     name: backupninja
+
+- name: Ensure that restic handler is present
+  get_url:
+    url: "{{ backupninja_restic_handler_url }}"
+    dest: "{{ backupninja_handler_dir }}/restic"
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+    force: yes
+    backup: yes
+
