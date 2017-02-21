@@ -5,3 +5,29 @@
 
 - name: Include backupninja tasks.
   include: backupninja.yml
+
+- name: Ensure that backup config(s) are in place.
+  template:
+    dest: "{{ backupninja_config_dir }}/{{ item.key }}.restic"
+    src: "files/example.{{ item.value.type | default('restic') }}.j2"
+    force: yes
+    owner: 'root'
+    group: 'root'
+    mode: '0600'
+  vars:
+    repo: "{{ item.value.repo }}"
+    backup: "{{ item.value.backup }}"
+    retention: "{{ item.value.retention }}"
+    check: "{{ item.value.check }}"
+    includes: "{{ item.value.includes }}"
+    excludes: "{{ item.value.excludes }}"
+    tags: "{{ item.value.tags }}"
+    keep:
+      last: "{{ item.value.keep.last }}"
+      hourly: "{{ item.value.keep.hourly }}"
+      daily: "{{ item.value.keep.daily }}"
+      weekly: "{{ item.value.keep.weekly }}"
+      monthly: "{{ item.value.keep.monthly }}"
+      yearly: "{{ item.value.keep.yearly }}"
+      tags: "{{ item.value.keep.tags }}"
+  with_dict: "{{ backup_configs }}"

@@ -2,7 +2,30 @@
 - hosts: localhost
   connection: local
   become: true
-  gather_facts: True
+
+  vars:
+    backup_configs:
+      one:
+        type: 'restic'
+        repo: 'thing'
+        password: 'thing'
+        backup: 'no'
+        retention: 'no'
+        check: 'no'
+        includes:
+          - /etc
+          - /home
+        excludes: {}
+        tags: {}
+        keep:
+          last: ''
+          hourly: ''
+          daily: ''
+          weekly: ''
+          monthly: ''
+          yearly: ''
+          tags: {}
 
   roles:
     - ergonlogic.backup
+

@@ -6,6 +6,7 @@ restic_download_url: "https://github.com/restic/restic/releases/download/v{{ res
 restic_download_checksum: 'sha256:4bb383706f0eb6bce31953707d1da549a5194c53211221065ba1876140722959'
 restic_dir: '/usr/share/restic'
 restic_bin: '/usr/sbin/restic'
+restic_password_dir: '/root/.restic'
 
 backupninja_restic_handler_url: 'https://0xacab.org/ergonlogic/backupninja/raw/dev/restic/handlers/restic.in'
 backupninja_handler_dir: '/usr/share/backupninja'
