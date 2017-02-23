@@ -12,11 +12,8 @@ Vagrant.configure(2) do |config|
     vb.cpus = 2
   end
 
-  config.vm.provision "ansible_local" do |ansible|
-    ansible.provisioning_path = "/vagrant/tests"
-    ansible.playbook = "playbook.yml"
-    ansible.inventory_path = "inventory"
-    ansible.limit = "all"
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "tests/playbook-vagrant.yml"
   end
 
 end

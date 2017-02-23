@@ -1,0 +1,43 @@
+---
+- hosts: all
+  become: true
+  gather_facts: no
+
+  pre_tasks:
+    - name: 'Update apt.'
+      raw: sudo apt-get update
+      changed_when: False
+    - name: 'Install python2'
+      raw: apt-get -y install python-simplejson
+      register: pre_task_install_python
+      changed_when: "'0 upgraded, 0 newly installed' not in '{{ pre_task_install_python.stdout}}'"
+
+  vars:
+    backup_configs:
+      one:
+        type: 'restic'
+        repo: '/var/backups/restic'
+        password: 'thing'
+#        repo: 's3:s3.amazonaws.com/tmp-restic-ansible-bucket-one'
+#        bucket: 'tmp-restic-ansible-bucket-one'
+#        provision_bucket: 'yes'
+        aws_key: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
+        aws_secret: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
+        backup: 'yes'
+        retention: 'yes'
+        check: 'yes'
+        includes: {}
+        excludes: {}
+        tags: {}
+        keep:
+          last: ''
+          hourly: ''
+          daily: ''
+          weekly: ''
+          monthly: ''
+          yearly: ''
+          tags: {}
+
+  roles:
+    - ergonlogic.backup
+

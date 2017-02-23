@@ -1,0 +1,24 @@
+---
+- hosts: localhost
+  connection: local
+  become: true
+
+  vars:
+    backup_configs:
+      one:
+        type: 'restic'
+        repo: 'test-repo'
+        password: 'dummy_password'
+        includes:
+          - /etc
+        keep:
+          last: 2
+
+  roles:
+    - ergonlogic.backup
+
+  tasks:
+
+  # TODO: Run backupninja a few times (w/ `-n`) and check that the proper
+  # number of backups exist.
+
