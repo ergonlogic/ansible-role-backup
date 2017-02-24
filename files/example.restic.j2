@@ -19,15 +19,27 @@ aws_secret = {{ aws_secret }}
 {% endif %}
 
 # Create a snapshot to backup specified data.
-backup = {{ backup | default('yes') }}
+{% if backup is defined %}
+backup = {{ backup }}
+{% else %}
+#backup =
+{% endif %}
 
 # Remove snapshots according to a policy.
 # Defaults to 'no'.
-retention = {{ retention | default('yes') }}
+{% if retention is defined %}
+retention = {{ retention }}
+{% else %}
+#retention =
+{% endif %}
 
 # Check repository integrity and consistency
 # Defaults to 'no'.
-check = {{ check | default('yes') }}
+{% if check is defined %}
+check = {{ check }}
+{% else %}
+#check =
+{% endif %}
 
 
 [backup]
@@ -64,20 +76,45 @@ one_file_system = yes
 [retention]
 
 # Never delete the n last (most recent) snapshots
-keep_last = {{ keep.last | default(omit) }}
+{% if keep is defined and keep.last is defined %}
+keep_last = {{ keep.last | default() }}
+{% else %}
+#keep_last =
+{% endif %}
+
 
 # For the last n hours/days/weeks/months/years in which a snapshot was made,
 # keep only the last snapshot for each hour/day/week/month/year.
 # When "retention = yes", above, default is to keep the last 7 backups, and
 # 2 each for daily, weekly, monthly and yearly backups.
-keep_hourly = {{ keep.hourly | default(omit) }}
-keep_daily = {{ keep.daily | default(omit) }}
-keep_weekly = {{ keep.weekly | default(omit) }}
-keep_monthly = {{ keep.monthly | default(omit) }}
-keep_yearly = {{ keep.yearly | default(omit) }}
+{% if keep is defined and keep.hourly is defined %}
+keep_hourly = {{ keep.hourly }}
+{% else %}
+#keep_hourly =
+{% endif %}
+{% if keep is defined and keep.daily is defined %}
+keep_daily = {{ keep.daily }}
+{% else %}
+#keep_daily =
+{% endif %}
+{% if keep is defined and keep.weekly is defined %}
+keep_weekly = {{ keep.weekly }}
+{% else %}
+#keep_weekly =
+{% endif %}
+{% if keep is defined and keep.monthly is defined %}
+keep_monthly = {{ keep.monthly }}
+{% else %}
+#keep_monthly =
+{% endif %}
+{% if keep is defined and keep.yearly is defined %}
+keep_yearly = {{ keep.yearly }}
+{% else %}
+#keep_yearly =
+{% endif %}
 
 # Keep all snapshots which have all tags specified by this option (can be specified multiple times).
-{% for keep_tag in keep.tags | default(omit) %}
+{% for keep_tag in keep.tags | default({}) %}
 keep_tag = {{ keep_tag }}
 {% else %}
 #keep_tag =

@@ -6,6 +6,7 @@
     state: present
   delegate_to: localhost
   become: false
+  no_log: True
   with_dict: "{{ backup_configs }}"
   when: (item.value.type | default('restic') == 'restic') and (item.value.provision_bucket | default('no') == 'yes')
 
@@ -17,6 +18,7 @@
     prefix: restic
   delegate_to: localhost
   become: false
+  no_log: True
   with_dict: "{{ backup_configs }}"
   when: (item.value.type | default('restic') == 'restic') and (item.value.bucket is defined)
   register: s3_init_lookup
@@ -28,6 +30,7 @@
     AWS_SECRET_ACCESS_KEY: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') | default(omit) }}"
     RESTIC_REPOSITORY: "{{ item.item.value.repo }}"
     RESTIC_PASSWORD: "{{ item.item.value.password }}"
+  no_log: True
   with_items: "{{ s3_init_lookup.results }}"
   when: (s3_init_lookup is defined) and (item.s3_keys == [])
 
@@ -43,6 +46,7 @@
   environment:
     RESTIC_REPOSITORY: "{{ item.item.value.repo }}"
     RESTIC_PASSWORD: "{{ item.item.value.password }}"
+  no_log: True
   with_items: "{{ local_init_lookup.results }}"
   when: (local_init_lookup is defined) and (item.stat.exists == False)
 

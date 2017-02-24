@@ -11,28 +11,29 @@
   vars:
     repo: "{{ item.value.repo | default(restic_default_repo) }}"
     password: "{{ item.value.password }}"
-    aws_key: "{{ item.value.aws_key | default(omit) }}"
-    aws_secret: "{{ item.value.aws_secret | default(omit) }}"
-    backup: "{{ item.value.backup | default(omit) }}"
-    retention: "{{ item.value.retention | default(omit) }}"
-    check: "{{ item.value.check | default(omit) }}"
-    includes: "{{ item.value.includes | default(omit) }}"
-    excludes: "{{ item.value.excludes | default(omit) }}"
-    snapshot_tags: "{{ item.value.tags | default(omit) }}"
-    keep: "{{ item.value.keep | default(omit) }}"
+    aws_key: "{{ item.value.aws_key | default(None) }}"
+    aws_secret: "{{ item.value.aws_secret | default(None) }}"
+    backup: "{{ item.value.backup | default('yes') }}"
+    retention: "{{ item.value.retention | default('yes') }}"
+    check: "{{ item.value.check | default('yes') }}"
+    includes: "{{ item.value.includes | default(None) }}"
+    excludes: "{{ item.value.excludes | default(None) }}"
+    snapshot_tags: "{{ item.value.tags | default(None) }}"
+    keep: "{{ item.value.keep | default(None) }}"
+  no_log: True
   with_dict: "{{ backup_configs }}"
   when: item.value.type | default('restic') == 'restic'
 
 - name: Ensure that mysql backup config(s) are in place.
   template:
-    dest: "{{ backupninja_config_dir }}/{{ item.key }}.restic"
+    dest: "{{ backupninja_config_dir }}/{{ item.key }}.mysql"
     src: 'files/example.mysql.j2'
     force: yes
     owner: 'root'
     group: 'root'
     mode: '0600'
   vars:
-    backupninja_mysql_databases: "{{ item.value.databases | default(omit) }}"
-    backupninja_mysql_backup_dir: "{{ item.value.backup_dir | default(omit) }}"
+    databases: "{{ item.value.databases | default(backupninja_mysql_databases) }}"
+    backup_dir: "{{ item.value.backup_dir | default(backupninja_mysql_backup_dir) }}"
   with_dict: "{{ backup_configs }}"
   when: item.value.type | default('restic') == 'mysql'
