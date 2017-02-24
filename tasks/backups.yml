@@ -30,3 +30,16 @@
   with_dict: "{{ backup_configs }}"
   when: item.value.type | default('restic') == 'restic'
 
+- name: Ensure that mysql backup config(s) are in place.
+  template:
+    dest: "{{ backupninja_config_dir }}/{{ item.key }}.restic"
+    src: 'files/example.mysql.j2'
+    force: yes
+    owner: 'root'
+    group: 'root'
+    mode: '0600'
+  vars:
+    backupninja_mysql_databases: "{{ item.value.databases | default(backupninja_mysql_databases) }}"
+    backupninja_mysql_backup_dir: "{{ item.value.backup_dir | default(backupninja_mysql_backup_dir) }}"
+  with_dict: "{{ backup_configs }}"
+  when: item.value.type | default('restic') == 'mysql'

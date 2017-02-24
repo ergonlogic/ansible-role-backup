@@ -13,4 +13,7 @@ backupninja_restic_handler_url: 'https://0xacab.org/ergonlogic/backupninja/raw/d
 backupninja_handler_dir: '/usr/share/backupninja'
 backupninja_config_dir: '/etc/backup.d'
 
+backupninja_mysql_databases: 'all'
+backupninja_mysql_backup_dir: '/var/backups/mysql'
+
 backup_configs: {}
