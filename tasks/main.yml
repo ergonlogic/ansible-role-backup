@@ -6,6 +6,9 @@
 - name: Include backupninja tasks.
   include: backupninja.yml
 
+- name: Include repository provisioning tasks.
+  include: repositories.yml
+
 - name: Include backup deployment tasks.
   include: backups.yml
 

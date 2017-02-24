@@ -1,0 +1,48 @@
+---
+
+- name: Create S3 buckets for restic repositories.
+  s3_bucket:
+    name: "{{ item.value.bucket }}"
+    state: present
+  delegate_to: localhost
+  become: false
+  with_dict: "{{ backup_configs }}"
+  when: (item.value.type | default('restic') == 'restic') and (item.value.provision_bucket | default('no') == 'yes')
+
+- name: Check if S3-backed restic repositories are already initialized.
+  s3:
+    bucket: "{{ item.value.bucket }}"
+    mode: list
+    max_keys: 1
+    prefix: restic
+  delegate_to: localhost
+  become: false
+  with_dict: "{{ backup_configs }}"
+  when: (item.value.type | default('restic') == 'restic') and (item.value.bucket is defined)
+  register: s3_init_lookup
+
+- name: Initialize S3-backed restic repositories.
+  command: "restic init"
+  environment:
+    AWS_ACCESS_KEY_ID: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') | default(omit) }}"
+    AWS_SECRET_ACCESS_KEY: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') | default(omit) }}"
+    RESTIC_REPOSITORY: "{{ item.item.value.repo }}"
+    RESTIC_PASSWORD: "{{ item.item.value.password }}"
+  with_items: "{{ s3_init_lookup.results }}"
+  when: (s3_init_lookup is defined) and (item.s3_keys == [])
+
+- name: Check if local restic repositories are already initialized.
+  stat:
+    path: "{{ item.value.repo }}"
+  with_dict: "{{ backup_configs }}"
+  when: (item.value.type | default('restic') == 'restic') and (item.value.bucket is not defined)
+  register: local_init_lookup
+
+- name: Initialize local restic repositories.
+  command: "restic init"
+  environment:
+    RESTIC_REPOSITORY: "{{ item.item.value.repo }}"
+    RESTIC_PASSWORD: "{{ item.item.value.password }}"
+  with_items: "{{ local_init_lookup.results }}"
+  when: (local_init_lookup is defined) and (item.stat.exists == False)
+
