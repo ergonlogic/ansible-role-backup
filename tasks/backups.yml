@@ -19,14 +19,7 @@
     includes: "{{ item.value.includes | default(omit) }}"
     excludes: "{{ item.value.excludes | default(omit) }}"
     snapshot_tags: "{{ item.value.tags | default(omit) }}"
-    keep:
-      last: "{{ item.value.keep.last | default(omit) }}"
-      hourly: "{{ item.value.keep.hourly | default(omit) }}"
-      daily: "{{ item.value.keep.daily | default(omit) }}"
-      weekly: "{{ item.value.keep.weekly | default(omit) }}"
-      monthly: "{{ item.value.keep.monthly | default(omit) }}"
-      yearly: "{{ item.value.keep.yearly | default(omit) }}"
-      tags: "{{ item.value.keep.tags | default(omit) }}"
+    keep: "{{ item.value.keep | default(omit) }}"
   with_dict: "{{ backup_configs }}"
   when: item.value.type | default('restic') == 'restic'
 
@@ -39,7 +32,7 @@
     group: 'root'
     mode: '0600'
   vars:
-    backupninja_mysql_databases: "{{ item.value.databases | default(backupninja_mysql_databases) }}"
-    backupninja_mysql_backup_dir: "{{ item.value.backup_dir | default(backupninja_mysql_backup_dir) }}"
+    backupninja_mysql_databases: "{{ item.value.databases | default(omit) }}"
+    backupninja_mysql_backup_dir: "{{ item.value.backup_dir | default(omit) }}"
   with_dict: "{{ backup_configs }}"
   when: item.value.type | default('restic') == 'mysql'
